@@ -124,8 +124,15 @@ docker compose exec ollama ollama pull qwen3:8b
 docker compose exec ollama ollama pull bge-m3
 ```
 
-Play with FastAPI at `http://127.0.0.1:8000/docs`，Streamlit 用 `docker compose exec agent streamlit run app.py`。
+API 文档在 `http://127.0.0.1:8000/docs`，Streamlit 用 `docker compose exec agent streamlit run app.py`。
 镜像能否构建由 GitHub Actions 在每次 push 时验证（顶部的 docker build 徽章）。
+
+**端到端已实测**：macOS (Apple Silicon) + colima 上构建镜像并启动容器后，容器内服务通过
+`host.docker.internal` 连到宿主机的 Ollama，真实请求返回：
+
+```json
+{"question": "value 列的最大值是多少？", "answer": "The maximum value in the 'value' column is 65."}
+```
 
 ### 1. 构建论文知识库
 
