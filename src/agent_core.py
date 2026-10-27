@@ -1,4 +1,6 @@
 from pathlib import Path
+import os
+
 import pandas as pd
 
 from langchain_ollama import ChatOllama, OllamaEmbeddings
@@ -6,6 +8,9 @@ from langchain_chroma import Chroma
 from langchain.agents import create_agent
 
 from langchain_experimental.tools import PythonAstREPLTool
+
+
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
 
 
 # ==================================================
@@ -23,7 +28,8 @@ DB_PATH = PROJECT_ROOT / "data" / "chroma_db"
 # ==================================================
 
 llm = ChatOllama(
-    model="qwen3:8b",
+    model=os.getenv("OLLAMA_MODEL", "qwen3:8b"),
+    base_url=OLLAMA_BASE_URL,
     temperature=0
 )
 
@@ -74,7 +80,8 @@ When executing code, make sure the final result is printed or returned.
 # ==================================================
 
 embeddings = OllamaEmbeddings(
-    model="bge-m3"
+    model=os.getenv("OLLAMA_EMBED_MODEL", "bge-m3"),
+    base_url=OLLAMA_BASE_URL
 )
 
 
@@ -165,6 +172,11 @@ Rules:
 
 - For any question involving the dataset, use DataAnalysis.
 - Do not estimate or guess numerical values. Calculate them with DataAnalysis.
+- Always execute the code and use its return value. Never answer with a code
+  snippet, a pandas expression, or a placeholder — report the actual numbers.
+- If one question asks for several figures, run one piece of code that computes
+  all of them at once, then report every figure.
+- If code raises an exception, read the error, fix the expression, and retry.
 - You decide which Python/Pandas operations are appropriate.
 - For questions involving the paper, use PaperSearch.
 - If a question requires both dataset analysis and paper information,

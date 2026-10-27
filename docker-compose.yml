@@ -1,0 +1,22 @@
+services:
+  # 本地推理服务：一次拉取模型后常驻，端口不对外暴露
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+
+  agent:
+    build: .
+    depends_on:
+      - ollama
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+
+volumes:
+  ollama-data:

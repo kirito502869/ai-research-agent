@@ -1,0 +1,12 @@
+.git
+.github
+venv/
+__pycache__/
+*.pyc
+data/chroma_db/
+data/documents/*.pdf
+.env
+.DS_Store
+*.log
+README.md
+LICENSE
